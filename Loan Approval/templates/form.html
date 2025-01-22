@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loan Risk Prediction</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+        @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css');
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #72edf2 10%, #5151e5 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding: 0 10px;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        .form-container {
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            margin: 20px;
+            text-align: center;
+            position: relative;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-container h2 {
+            margin-bottom: 20px;
+            color: #333;
+            font-size: 28px;
+            font-weight: 700;
+            position: relative;
+        }
+
+        .form-container h2:after {
+            content: '';
+            display: block;
+            width: 50px;
+            height: 3px;
+            background: #007bff;
+            margin: 10px auto;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: calc(100% - 12px);
+            padding: 10px;
+            margin: 0 5px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: #007bff;
+            outline: none;
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.25);
+        }
+
+        .form-group input[type="number"] {
+            -moz-appearance: textfield;
+        }
+
+        .form-group input[type="number"]::-webkit-outer-spin-button,
+        .form-group input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .form-group .tooltip {
+            display: inline-block;
+            position: relative;
+        }
+
+        .form-group .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 120px;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -60px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .form-group .tooltip .tooltiptext::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #555 transparent transparent transparent;
+        }
+
+        .form-group .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .section {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .section.active {
+            display: block;
+            opacity: 1;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .circle {
+            width: 20px;
+            height: 20px;
+            background: #ccc;
+            border-radius: 50%;
+            margin: 0 10px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .circle.active {
+            background: #007bff;
+        }
+
+        .progress-bar {
+            height: 5px;
+            width: 100%;
+            background: #ccc;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .progress-bar-inner {
+            height: 100%;
+            width: 0;
+            background: #007bff;
+            transition: width 0.5s;
+        }
+
+        .button-container {
+            margin: 10px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 12px;
+            background: #007bff;
+            border: none;
+            color: #fff;
+            font-size: 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        .submit-btn:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+        }
+
+        @media (max-width: 768px) {
+            .form-container {
+                padding: 20px;
+                width: 100%;
+                margin: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .form-container {
+                padding: 15px;
+                margin: 5px;
+            }
+
+            .form-container h2 {
+                font-size: 22px;
+            }
+
+            .form-group label {
+                font-size: 14px;
+            }
+
+            .form-group input,
+            .form-group select {
+                font-size: 14px;
+                padding: 8px;
+            }
+
+            .submit-btn {
+                font-size: 16px;
+                padding: 10px;
+            }
+
+            .circle {
+                width: 15px;
+                height: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="form-container">
+        <h2>Loan Risk Prediction</h2>
+        <div class="progress-bar">
+            <div class="progress-bar-inner" id="progressBar"></div>
+        </div>
+        <form id="infoForm" action="/predict" method="post">
+            <div id="section1" class="section active">
+                <div class="form-group">
+                    <label for="age">Age
+                        <div class="tooltip"><i class="fas fa-info-circle"></i>
+                            <span class="tooltiptext">Your age in years</span>
+                        </div>
+                    </label>
+                    <input type="number" id="age" name="age" required oninput="validateInput(this)">
+                </div>
+                <div class="form-group">
+                    <label for="sex">Sex
+                        <div class="tooltip"><i class="fas fa-info-circle"></i>
+                            <span class="tooltiptext">Your gender</span>
+                        </div>
+                    </label>
+                    <select id="sex" name="sex" required>
+                        <option value="" disabled selected hidden>Select...</option>
+                        <option value="1">Male</option>
+                        <option value="0">Female</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="job">Job
+                        <div class="tooltip"><i class="fas fa-info-circle"></i>
+                            <span class="tooltiptext">Your job category</span>
+                        </div>
+                    </label>
+                    <input type="number" id="job" name="job" required oninput="validateInput(this)">
+                </div>
+                <div class="form-group">
+                    <label for="housing">Housing
+                        <div class="tooltip"><i class="fas fa-info-circle"></i>
+                            <span class="tooltiptext">Your housing status</span>
+                        </div>
+                    </label>
+                    <select id="housing" name="housing" required>
+                        <option value="" disabled selected hidden>Select...</option>
+                        <option value="1">Own</option>
+                        <option value="2">Rent</option>
+                        <option value="0">Free</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="section2" class="section">
+                <div class="form-group">
+                    <label for="savingAccount">Saving Account
+                        <div class="tooltip"><i class="fas fa-info-circle"></i>
+                            <span class="tooltiptext">Your savings account status</span>
+                        </div>
+                    </label>
+                    <select id="savingAccount" name="savingAccount" required>
+                        <option value="" disabled selected hidden>Select...</option>
+                        <option value="0">Little</option>
+                        <option value="1">Moderate</option>
+                        <option value="2">Quite Rich</option>
+                        <option value="3">Rich</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="checkingAccount">Checking Account
+                        <div class="tooltip"><i class="fas fa-info-circle"></i>
+                            <span class="tooltiptext">Your checking account status</span>
+                        </div>
+                    </label>
+                    <select id="checkingAccount" name="checkingAccount" required>
+                        <option value="" disabled selected hidden>Select...</option>
+                        <option value="0">Little</option>
+                        <option value="1">Moderate</option>
+                        <option value="2">Rich</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="creditAmount">Credit Amount
+                        <div class="tooltip"><i class="fas fa-info-circle"></i>
+                            <span class="tooltiptext">Amount of credit you are requesting</span>
+                        </div>
+                    </label>
+                    <input type="number" id="creditAmount" name="creditAmount" required oninput="validateInput(this)">
+                </div>
+                <div class="form-group">
+                    <label for="duration">Duration (months)
+                        <div class="tooltip"><i class="fas fa-info-circle"></i>
+                            <span class="tooltiptext">Duration of the loan in months</span>
+                        </div>
+                    </label>
+                    <input type="number" id="duration" name="duration" required oninput="validateInput(this)">
+                </div>
+                <div class="form-group">
+                    <label for="purpose">Purpose
+                        <div class="tooltip"><i class="fas fa-info-circle"></i>
+                            <span class="tooltiptext">Purpose of the loan</span>
+                        </div>
+                    </label>
+                    <select id="purpose" name="purpose" required>
+                        <option value="" disabled selected hidden>Select...</option>
+                        <option value="5">Radio/TV</option>
+                        <option value="3">Education</option>
+                        <option value="4">Furniture/Equipment</option>
+                        <option value="1">Car</option>
+                        <option value="0">Businesses</option>
+                        <option value="2">Domestic Appliance</option>
+                        <option value="6">Repairs</option>
+                        <option value="7">Vacation/Others</option>
+                    </select>
+                </div>
+                <div class="button-container">
+                    <button type="submit" class="submit-btn" id="submitButton">Predict</button>
+                </div>
+            </div>
+        </form>
+
+        <div class="navigation">
+            <div class="circle active" onclick="showSection(1)"></div>
+            <div class="circle" onclick="showSection(2)"></div>
+        </div>
+    </div>
+
+    <script>
+        function showSection(section) {
+            document.querySelectorAll('.section').forEach(function (el) {
+                el.classList.remove('active');
+            });
+            document.querySelectorAll('.circle').forEach(function (el) {
+                el.classList.remove('active');
+            });
+            document.getElementById('section' + section).classList.add('active');
+            document.querySelector('.circle:nth-child(' + section + ')').classList.add('active');
+            updateProgressBar(section);
+        }
+
+        function updateProgressBar(section) {
+            const progressBar = document.getElementById('progressBar');
+            if (section === 1) {
+                progressBar.style.width = '50%';
+            } else if (section === 2) {
+                progressBar.style.width = '100%';
+            }
+        }
+
+        function validateInput(input) {
+            if (input.value === '') {
+                input.setCustomValidity('This field cannot be left blank');
+            } else {
+                input.setCustomValidity('');
+            }
+            checkFormValidity();
+        }
+
+        function checkFormValidity() {
+            const form = document.getElementById('infoForm');
+            const submitButton = document.getElementById('submitButton');
+            if (form.checkValidity()) {
+                submitButton.disabled = false;
+            } else {
+                submitButton.disabled = true;
+            }
+        }
+
+        document.querySelectorAll('input, select').forEach(function (input) {
+            input.addEventListener('input', function () {
+                validateInput(input);
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            checkFormValidity();
+        });
+    </script>
+</body>
+
+</html>
